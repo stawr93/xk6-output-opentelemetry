@@ -4,6 +4,7 @@ package opentelemetry
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -109,6 +110,7 @@ func (o *Output) Start() error {
 }
 
 func (o *Output) flushMetrics() {
+	ignoreMetrics := strings.Split(o.config.MetricIgnorePrefix.String, ",")
 	samples := o.GetBufferedSamples()
 	start := time.Now()
 	var count, errCount int
@@ -116,6 +118,23 @@ func (o *Output) flushMetrics() {
 		samples := sc.GetSamples()
 
 		for _, sample := range samples {
+			ignore := false
+
+			for _, ignoreMetricPrefix := range ignoreMetrics {
+				if strings.HasPrefix(sample.Metric.Name, ignoreMetricPrefix) {
+					ignore = true
+					break
+				}
+			}
+
+			if ignore {
+				o.logger.
+					WithField("t", time.Since(start)).
+					WithField("metric", sample.Metric.Name).
+					Warn("metric ignored")
+				continue
+			}
+
 			if err := o.dispatch(sample); err != nil {
 				o.logger.WithError(err).Error("Error dispatching sample")
 				errCount++

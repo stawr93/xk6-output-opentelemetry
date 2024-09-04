@@ -35,6 +35,8 @@ type Config struct {
 	// FlushInterval is the interval at which to flush metrics from the k6
 	FlushInterval types.NullDuration `json:"flushInterval" envconfig:"K6_OTEL_FLUSH_INTERVAL"`
 
+	MetricIgnorePrefix null.String `json:"metricIgnorePrefix" envconfig:"K6_OTEL_METRIC_IGNORE_PREFIX"`
+
 	// ExporterType sets the type of OpenTelemetry Exporter to use
 	ExporterType null.String `json:"exporterType" envconfig:"K6_OTEL_EXPORTER_TYPE"`
 	// ExportInterval configures the intervening time between metrics exports
@@ -137,6 +139,10 @@ func (cfg Config) Apply(v Config) Config {
 
 	if v.FlushInterval.Valid {
 		cfg.FlushInterval = v.FlushInterval
+	}
+
+	if v.MetricIgnorePrefix.Valid {
+		cfg.MetricIgnorePrefix = v.MetricIgnorePrefix
 	}
 
 	if v.ExporterType.Valid {
