@@ -2,7 +2,7 @@
 package xk6opentelemetry
 
 import (
-	"github.com/grafana/xk6-output-opentelemetry/pkg/opentelemetry"
+	"github.com/stawr93/xk6-output-opentelemetry/pkg/opentelemetry"
 	"go.k6.io/k6/output"
 )
 

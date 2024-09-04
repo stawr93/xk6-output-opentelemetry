@@ -1,4 +1,4 @@
-module github.com/grafana/xk6-output-opentelemetry
+module github.com/stawr93/xk6-output-opentelemetry
 
 go 1.21
 
